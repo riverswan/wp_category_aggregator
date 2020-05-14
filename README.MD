@@ -1,0 +1,1 @@
+A script to fill empty wordpress categories with random products.
