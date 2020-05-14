@@ -120,8 +120,6 @@ function insert_shortcode_for_custom_products() {
 		$resulting_list_of_products = array_merge($resulting_list_of_products, $random_products);
 		add_resulting_products_to_page($resulting_list_of_products, $amount_of_products_to_add);
 	}
-
-	echo microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
 }
 
 
