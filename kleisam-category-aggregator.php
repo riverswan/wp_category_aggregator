@@ -58,12 +58,19 @@ function insert_shortcode_for_custom_products() {
 
 	$list_of_products_on_current_page = get_products_ids_on_page($posts);
 
+
 	$list_of_all_products_of_current_main_category = wc_get_products(
 		array(
 			'category' => get_term_by('id', end($list_of_all_categories), 'product_cat'),
 			'return' => 'ids',
 		)
 	);
+
+
+	if (empty($list_of_products_on_current_page)){
+		$list_of_products_on_current_page = $list_of_all_products_of_current_main_category;
+	}
+
 
 	$list_of_related_products = generate_array_of_related_products($list_of_products_on_current_page);
 //
@@ -76,12 +83,12 @@ function insert_shortcode_for_custom_products() {
 //	print_r('main category all products');
 //	print_r($list_of_all_products_of_current_main_category);
 //	echo "</pre>";
-//
+
 //	echo "<pre>";
 //	print_r('related products');
 //	print_r($list_of_related_products);
 //	echo "</pre>";
-//
+
 
 	// exclude from array of all products array of products on page
 	$step1 = array_diff($list_of_all_products_of_current_main_category, $list_of_products_on_current_page);
@@ -95,8 +102,7 @@ function insert_shortcode_for_custom_products() {
 
 	//reverse and normalize array of elements
 	$resulting_list_of_products = array_reverse(array_values($step3));
-//	$amount_of_products_to_add = $max_count_of_posts - count($resulting_list_of_products);
-
+//
 //
 //	echo "<pre>";
 //	print_r('RESULT OF MIX');
@@ -114,6 +120,8 @@ function insert_shortcode_for_custom_products() {
 		$resulting_list_of_products = array_merge($resulting_list_of_products, $random_products);
 		add_resulting_products_to_page($resulting_list_of_products, $amount_of_products_to_add);
 	}
+
+	echo microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
 }
 
 
