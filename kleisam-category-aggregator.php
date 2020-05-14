@@ -14,9 +14,14 @@
 
 
 add_action('woocommerce_after_shop_loop', 'insert_shortcode_for_custom_products');
+add_action('woocommerce_no_products_found', 'insert_shortcode_for_custom_products', 2);
+add_filter('woocommerce_shortcode_products_query', 'woocommerce_shortcode_products_orderby');
+add_filter('woocommerce_price_filter_widget_min_amount', 'kleisam_price_filter_min');
+add_filter('woocommerce_price_filter_widget_max_amount', 'kleisam_price_filter_max');
+
 
 function insert_shortcode_for_custom_products() {
-	remove_action('woocommerce_no_products_found', 'wc_no_products_found' );
+	remove_action('woocommerce_no_products_found', 'wc_no_products_found');
 	if (!is_product_category() && is_admin()) {
 		return;
 	}
@@ -111,7 +116,6 @@ function insert_shortcode_for_custom_products() {
 	}
 }
 
-add_filter('woocommerce_shortcode_products_query', 'woocommerce_shortcode_products_orderby');
 
 function woocommerce_shortcode_products_orderby($args) {
 
@@ -132,13 +136,11 @@ function woocommerce_shortcode_products_orderby($args) {
 	return $args;
 }
 
-add_filter('woocommerce_price_filter_widget_min_amount', 'kleisam_price_filter_min');
 
 function kleisam_price_filter_min($amount) {
 	return 0;
 }
 
-add_filter('woocommerce_price_filter_widget_max_amount', 'kleisam_price_filter_max');
 
 function kleisam_price_filter_max($amount) {
 
@@ -151,31 +153,6 @@ function kleisam_price_filter_max($amount) {
 	);
 	return $max_price[0]->price;
 }
-
-//
-//
-//function exclude_product_cat_children($wp_query) {
-//
-//	if (!is_product_category() && is_admin()) {
-//		return;
-//	}
-//
-//
-//	if (isset ($wp_query->query_vars['product_cat']) && $wp_query->is_main_query()) {
-//		$wp_query->set('tax_query', array(
-//			array(
-//				'taxonomy' => 'product_cat',
-//				'field' => 'slug',
-//				'terms' => $wp_query->query_vars['product_cat'],
-//				'include_children' => false
-//			)
-//		));
-//	}
-//}
-//
-//
-////add_filter('pre_get_posts', 'exclude_product_cat_children');
-//
 
 function get_products_ids_on_page($array_of_products) {
 	if (!is_array($array_of_products)) {
@@ -192,9 +169,6 @@ function get_products_ids_on_page($array_of_products) {
 
 function add_resulting_products_to_page($array_of_products, $amount_of_products_to_add) {
 	$str = implode(',', $array_of_products);
-	echo "<pre>";
-	print_r($str);
-	echo "</pre>";
 	echo do_shortcode("[products ids=$str limit=$amount_of_products_to_add orderby=post__in]");
 }
 
@@ -231,5 +205,30 @@ function generate_array_of_related_products($resulting_list_of_products) {
 	return $array_of_related_products;
 }
 
-add_action('woocommerce_no_products_found','insert_shortcode_for_custom_products',2);
 
+
+//don't know if i need it
+//
+//
+//function exclude_product_cat_children($wp_query) {
+//
+//	if (!is_product_category() && is_admin()) {
+//		return;
+//	}
+//
+//
+//	if (isset ($wp_query->query_vars['product_cat']) && $wp_query->is_main_query()) {
+//		$wp_query->set('tax_query', array(
+//			array(
+//				'taxonomy' => 'product_cat',
+//				'field' => 'slug',
+//				'terms' => $wp_query->query_vars['product_cat'],
+//				'include_children' => false
+//			)
+//		));
+//	}
+//}
+//
+//
+////add_filter('pre_get_posts', 'exclude_product_cat_children');
+//
