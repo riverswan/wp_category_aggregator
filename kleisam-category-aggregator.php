@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name:       Kleisam Ru Category Aggregator
+ * Plugin Name:       Website Category Aggregator
  * Plugin URI:        https://github.com/riverswan/
- * Description:       Adds random products to Categories on front
+ * Description:       Adds random products to Categories on front-end
  * Version:           1.0.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
@@ -13,14 +13,13 @@
  */
 
 
-add_action('woocommerce_after_shop_loop', 'insert_shortcode_for_custom_products');
-add_action('woocommerce_no_products_found', 'insert_shortcode_for_custom_products', 2);
-add_filter('woocommerce_shortcode_products_query', 'woocommerce_shortcode_products_orderby');
-add_filter('woocommerce_price_filter_widget_min_amount', 'kleisam_price_filter_min');
-add_filter('woocommerce_price_filter_widget_max_amount', 'kleisam_price_filter_max');
+add_action('woocommerce_after_shop_loop', 'rvs_insert_shortcode_for_custom_products');
+add_action('woocommerce_no_products_found', 'rvs_insert_shortcode_for_custom_products', 2);
+add_filter('woocommerce_shortcode_products_query', 'rvs_woocommerce_shortcode_products_orderby');
+add_filter('woocommerce_price_filter_widget_min_amount', 'rvs_price_filter_min');
+add_filter('woocommerce_price_filter_widget_max_amount', 'rvs_price_filter_max');
 
-
-function insert_shortcode_for_custom_products() {
+function rvs_insert_shortcode_for_custom_products() {
 	remove_action('woocommerce_no_products_found', 'wc_no_products_found');
 	if (!is_product_category() && is_admin()) {
 		return;
@@ -123,7 +122,7 @@ function insert_shortcode_for_custom_products() {
 }
 
 
-function woocommerce_shortcode_products_orderby($args) {
+function rvs_woocommerce_shortcode_products_orderby($args) {
 
 	$min_price = isset($_GET['min_price']) ? esc_attr($_GET['min_price']) : false;
 	$max_price = isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : false;
@@ -143,12 +142,12 @@ function woocommerce_shortcode_products_orderby($args) {
 }
 
 
-function kleisam_price_filter_min($amount) {
+function rvs_price_filter_min($amount) {
 	return 0;
 }
 
 
-function kleisam_price_filter_max($amount) {
+function rvs_price_filter_max($amount) {
 
 	$max_price = wc_get_products(
 		array(
