@@ -21,7 +21,7 @@ add_filter('woocommerce_price_filter_widget_max_amount', 'rvs_price_filter_max')
 
 function rvs_insert_shortcode_for_custom_products() {
 	remove_action('woocommerce_no_products_found', 'wc_no_products_found');
-	if (!is_product_category() || is_admin() || is_shop() ) {
+	if (!is_product_category() || is_shop() ) {
 		return;
 	}
 
