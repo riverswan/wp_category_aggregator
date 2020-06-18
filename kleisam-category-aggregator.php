@@ -21,25 +21,24 @@ add_filter('woocommerce_price_filter_widget_max_amount', 'rvs_price_filter_max')
 
 function rvs_generate_related_products() {
 	remove_action('woocommerce_no_products_found', 'wc_no_products_found');
-	if (!is_product_category() || is_shop() ) {
+	if (!is_product_category() || is_shop()) {
 		return;
 	}
 
-	if (is_user_logged_in()){
-		global $posts;
 
-		$current_category = get_queried_object();
-		$count_of_products_on_page = count($posts);
-		$max_count_of_posts = 12;
-		$amount_of_products_to_add = $max_count_of_posts - $count_of_products_on_page;
+	global $posts;
+	$current_category = get_queried_object();
+	$count_of_products_on_page = count($posts);
+	$max_count_of_posts = 48;
+	$amount_of_products_to_add = $max_count_of_posts - $count_of_products_on_page;
 
 
-		if ($amount_of_products_to_add <= 0) {
-			return;
-		}
+	if ($amount_of_products_to_add <= 0) {
+		return;
+	}
 
-		echo '<h3>Похожие товары</h3>';
-		echo '<hr/>';
+	echo '<h3>Похожие товары</h3>';
+	echo '<hr/>';
 
 //	echo "<pre>";
 //	print_r('COUNT OF POSTS IS ::: ' . $count_of_products_on_page);
@@ -50,29 +49,29 @@ function rvs_generate_related_products() {
 //	print_r($amount_of_products_to_add);
 //	echo "</pre>";
 
-		$list_of_parent_categories = get_ancestors($current_category->term_id, 'product_cat');
+	$list_of_parent_categories = get_ancestors($current_category->term_id, 'product_cat');
 
-		if (empty($list_of_parent_categories)) {
-			$list_of_parent_categories[] = $current_category->term_id;
-		}
+	if (empty($list_of_parent_categories)) {
+		$list_of_parent_categories[] = $current_category->term_id;
+	}
 
-		$list_of_products_on_current_page = rvs_get_products_ids_on_page($posts);
-
-
-		$list_of_all_products_of_current_main_category = wc_get_products(
-			array(
-				'category' => get_term_by('id', end($list_of_parent_categories), 'product_cat'),
-				'return' => 'ids',
-			)
-		);
+	$list_of_products_on_current_page = rvs_get_products_ids_on_page($posts);
 
 
-		if (empty($list_of_products_on_current_page)){
-			$list_of_products_on_current_page = $list_of_all_products_of_current_main_category;
-		}
+	$list_of_all_products_of_current_main_category = wc_get_products(
+		array(
+			'category' => get_term_by('id', end($list_of_parent_categories), 'product_cat'),
+			'return' => 'ids',
+		)
+	);
 
 
-		$list_of_related_products = rvs_generate_array_of_related_products($list_of_products_on_current_page);
+	if (empty($list_of_products_on_current_page)) {
+		$list_of_products_on_current_page = $list_of_all_products_of_current_main_category;
+	}
+
+
+	$list_of_related_products = rvs_generate_array_of_related_products($list_of_products_on_current_page);
 //
 //	echo "<pre>";
 //	print_r('curr page products');
@@ -90,18 +89,18 @@ function rvs_generate_related_products() {
 //	echo "</pre>";
 
 
-		// exclude from array of all products array of products on page
-		$step1 = array_diff($list_of_all_products_of_current_main_category, $list_of_products_on_current_page);
+	// exclude from array of all products array of products on page
+	$step1 = array_diff($list_of_all_products_of_current_main_category, $list_of_products_on_current_page);
 
-		//merge result with array of related products
-		$step2 = array_unique(array_merge($step1, $list_of_related_products));
+	//merge result with array of related products
+	$step2 = array_unique(array_merge($step1, $list_of_related_products));
 
-		// check again if result does not contain products from page
-		$step3 = array_diff($step2, $list_of_products_on_current_page);
+	// check again if result does not contain products from page
+	$step3 = array_diff($step2, $list_of_products_on_current_page);
 
 
-		//reverse and normalize array of elements
-		$resulting_list_of_products = array_reverse(array_values($step3));
+	//reverse and normalize array of elements
+	$resulting_list_of_products = array_reverse(array_values($step3));
 //
 //
 //	echo "<pre>";
@@ -110,17 +109,17 @@ function rvs_generate_related_products() {
 //	echo "</pre>";
 
 
-		//if there are enough amount of products
-		if (count($resulting_list_of_products) >= $amount_of_products_to_add) {
-			rvs_add_resulting_products_to_page($resulting_list_of_products, $amount_of_products_to_add);
-		} else {
-			$random_products = rvs_generate_array_of_random_products_to_add_on_page(
-				$amount_of_products_to_add - count($resulting_list_of_products)
-				, $resulting_list_of_products);
-			$resulting_list_of_products = array_merge($resulting_list_of_products, $random_products);
-			rvs_add_resulting_products_to_page($resulting_list_of_products, $amount_of_products_to_add);
-		}
+	//if there are enough amount of products
+	if (count($resulting_list_of_products) >= $amount_of_products_to_add) {
+		rvs_add_resulting_products_to_page($resulting_list_of_products, $amount_of_products_to_add);
+	} else {
+		$random_products = rvs_generate_array_of_random_products_to_add_on_page(
+			$amount_of_products_to_add - count($resulting_list_of_products)
+			, $resulting_list_of_products);
+		$resulting_list_of_products = array_merge($resulting_list_of_products, $random_products);
+		rvs_add_resulting_products_to_page($resulting_list_of_products, $amount_of_products_to_add);
 	}
+
 }
 
 
