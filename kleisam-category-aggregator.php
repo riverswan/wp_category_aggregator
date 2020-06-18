@@ -19,6 +19,17 @@ add_filter('woocommerce_shortcode_products_query', 'rvs_woocommerce_shortcode_pr
 add_filter('woocommerce_price_filter_widget_min_amount', 'rvs_price_filter_min');
 add_filter('woocommerce_price_filter_widget_max_amount', 'rvs_price_filter_max');
 
+
+if (!function_exists('rvs_remove_parent_category_from_url')){
+	function rvs_remove_parent_category_from_url( $args ) {
+		$args['rewrite']['hierarchical'] = false;
+		return $args;
+	}
+
+	add_filter( 'woocommerce_taxonomy_args_product_cat', 'rvs_remove_parent_category_from_url' );
+}
+
+
 function rvs_generate_related_products() {
 	remove_action('woocommerce_no_products_found', 'wc_no_products_found');
 	if (!is_product_category() || is_shop()) {
@@ -29,7 +40,7 @@ function rvs_generate_related_products() {
 	global $posts;
 	$current_category = get_queried_object();
 	$count_of_products_on_page = count($posts);
-	$max_count_of_posts = 48;
+	$max_count_of_posts = (int)(get_option( 'woocommerce_catalog_columns')) * (int)(get_option( 'woocommerce_catalog_rows'));
 	$amount_of_products_to_add = $max_count_of_posts - $count_of_products_on_page;
 
 
@@ -39,6 +50,7 @@ function rvs_generate_related_products() {
 
 	echo '<h3>Похожие товары</h3>';
 	echo '<hr/>';
+
 
 //	echo "<pre>";
 //	print_r('COUNT OF POSTS IS ::: ' . $count_of_products_on_page);
@@ -238,3 +250,4 @@ function rvs_generate_array_of_related_products($resulting_list_of_products) {
 //
 ////add_filter('pre_get_posts', 'exclude_product_cat_children');
 //
+
