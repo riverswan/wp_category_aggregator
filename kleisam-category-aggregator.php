@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name:       Website Category Aggregator
+ * Plugin Name:       KLEISAM.RU category aggregator
  * Plugin URI:        https://github.com/riverswan/
- * Description:       Adds random products to Categories on front-end
+ * Description:       Наполняет категории товаров до одной полной страницы
  * Version:           1.0.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
@@ -20,14 +20,14 @@ add_filter('woocommerce_price_filter_widget_min_amount', 'rvs_price_filter_min')
 add_filter('woocommerce_price_filter_widget_max_amount', 'rvs_price_filter_max');
 
 
-if (!function_exists('rvs_remove_parent_category_from_url')){
-	function rvs_remove_parent_category_from_url( $args ) {
-		$args['rewrite']['hierarchical'] = false;
-		return $args;
-	}
-
-	add_filter( 'woocommerce_taxonomy_args_product_cat', 'rvs_remove_parent_category_from_url' );
-}
+//if (!function_exists('rvs_remove_parent_category_from_url')){
+//	function rvs_remove_parent_category_from_url( $args ) {
+//		$args['rewrite']['hierarchical'] = false;
+//		return $args;
+//	}
+//
+//	add_filter( 'woocommerce_taxonomy_args_product_cat', 'rvs_remove_parent_category_from_url' );
+//}
 
 
 function rvs_generate_related_products() {
@@ -40,7 +40,9 @@ function rvs_generate_related_products() {
 	global $posts;
 	$current_category = get_queried_object();
 	$count_of_products_on_page = count($posts);
-	$max_count_of_posts = (int)(get_option( 'woocommerce_catalog_columns')) * (int)(get_option( 'woocommerce_catalog_rows'));
+	$woo_rows_count = (int)(get_option( 'woocommerce_catalog_rows')) || 3;
+	$woo_columns_count = (int)(get_option( 'woocommerce_catalog_columns')) || 4;
+	$max_count_of_posts = $woo_rows_count * $woo_columns_count ;
 	$amount_of_products_to_add = $max_count_of_posts - $count_of_products_on_page;
 
 
