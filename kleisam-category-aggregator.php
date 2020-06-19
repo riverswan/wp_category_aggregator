@@ -40,9 +40,9 @@ function rvs_generate_related_products() {
 	global $posts;
 	$current_category = get_queried_object();
 	$count_of_products_on_page = count($posts);
-	$woo_rows_count = (int)(get_option( 'woocommerce_catalog_rows')) || 3;
-	$woo_columns_count = (int)(get_option( 'woocommerce_catalog_columns')) || 4;
-	$max_count_of_posts = $woo_rows_count * $woo_columns_count ;
+	$woo_rows_count = (int)(get_option('woocommerce_catalog_rows'));
+	$woo_columns_count = (int)(get_option('woocommerce_catalog_columns'));
+	$max_count_of_posts = $woo_rows_count * $woo_columns_count;
 	$amount_of_products_to_add = $max_count_of_posts - $count_of_products_on_page;
 
 
@@ -123,7 +123,7 @@ function rvs_generate_related_products() {
 //	echo "</pre>";
 
 
-	//if there are enough amount of products
+	//if there is enough amount of products
 	if (count($resulting_list_of_products) >= $amount_of_products_to_add) {
 		rvs_add_resulting_products_to_page($resulting_list_of_products, $amount_of_products_to_add);
 	} else {
@@ -166,8 +166,9 @@ function rvs_price_filter_max($amount) {
 
 	$max_price = wc_get_products(
 		array(
-			'limit' => 1,
-			'orderby' => '_price',
+			'limit' => -1,
+			'orderby' => 'meta_value_num',
+			'meta_key' => '_price',
 			'order' => 'DESC'
 		)
 	);
